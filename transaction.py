@@ -44,6 +44,6 @@ async def transfer(transaction: Transaction):
         "from_index": transaction.from_index,
         "to_index": transaction.to_index,
         "amount": transaction.amount,
-        "updated_accounts1": accounts1,
-        "updated_accounts2": accounts2,
+        "updated_accounts1": user1,
+        "updated_accounts2": user2,
     }
