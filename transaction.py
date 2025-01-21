@@ -4,13 +4,13 @@ from pydantic import BaseModel
 app = FastAPI()
 
 # Les tableaux simulant des comptes avec des soldes
-accounts1 = [1000, 500, 300]  # Ex: Tableau 1
-accounts2 = [200, 800, 400]   # Ex: Tableau 2
+user1 = [1000, 500, 300]  
+user2 = [200, 800, 400]   
 
 # Modèle pour représenter une transaction
 class Transaction(BaseModel):
-    from_table: str  # 'accounts1' ou 'accounts2'
-    to_table: str    # 'accounts1' ou 'accounts2'
+    from_table: str  
+    to_table: str    
     from_index: int
     to_index: int
     amount: float
@@ -18,7 +18,7 @@ class Transaction(BaseModel):
 @app.post("/transfer/")
 async def transfer(transaction: Transaction):
     # Vérification des tableaux
-    if transaction.from_table not in ["accounts1", "accounts2"] or transaction.to_table not in ["accounts1", "accounts2"]:
+    if transaction.from_table not in ["user1", "user2"] or transaction.to_table not in ["user1", "user2"]:
         raise HTTPException(status_code=400, detail="Invalid table name. Use 'accounts1' or 'accounts2'.")
     
     # Accès dynamique aux tableaux
