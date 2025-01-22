@@ -33,6 +33,10 @@ class Transaction(SQLModel):
     to_compte_id: int
     amount: float
 
+class LoginRequest(BaseModel):
+    email: str
+    password: str
+
 def init_db():
     SQLModel.metadata.create_all(engine)
 
