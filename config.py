@@ -19,14 +19,10 @@ class UserCreate(SQLModel):  # Basé sur SQLModel, pas besoin de table=True
     email: EmailStr
     password: str
 
-class Money(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
-    value: float
-
 class Compte(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
-    money_id: int = Field(foreign_key="money.id")
+    money_value: float
 
 class Transaction(SQLModel):
     from_compte_id: int
@@ -40,6 +36,10 @@ class Depot(SQLModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
+
+class CreateAccountRequest(SQLModel):
+    user_id: int
+    money_value: float
 
 def init_db():
     SQLModel.metadata.create_all(engine)
@@ -61,33 +61,6 @@ def generate_iban(country_code="FR") -> str:
 @app.on_event("startup")
 def on_startup():
     init_db()
-
-@app.post("/users/", response_model=dict)
-def create_user(user: UserCreate, session: Session = Depends(get_session)):
-    try:
-        # Vérifier si l'utilisateur existe déjà
-        existing_user = session.exec(select(User).where(User.email == user.email)).first()
-        if existing_user:
-            raise HTTPException(status_code=400, detail="E-mail déjà utilisé.")
-
-        # Générer un IBAN unique
-        iban = generate_iban()
-        while session.exec(select(User).where(User.iban == iban)).first():
-            iban = generate_iban()
-
-        # Hacher le mot de passe
-        hashed_password = hash_password(user.password)
-
-        # Créer et sauvegarder le nouvel utilisateur
-        new_user = User(email=user.email, password=hashed_password, iban=iban)
-        session.add(new_user)
-        session.commit()
-        session.refresh(new_user)
-
-        return {"email": new_user.email, "iban": new_user.iban}
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 @app.get("/users/")
 def get_users(session: Session = Depends(get_session)):
