@@ -18,6 +18,9 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session))
     from_money = db.exec(select(Compte).where(Compte.money_value == from_compte.money_value)).first()
     to_money = db.exec(select(Compte).where(Compte.money_value  == to_compte.money_value)).first()
 
+    if  from_money or  to_money == Compte.id:
+        raise HTTPException(status_code=404, detail="is same accout.")
+
     if not from_money or not to_money:
         raise HTTPException(status_code=404, detail="Money details not found for one or both accounts.")
 
