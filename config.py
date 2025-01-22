@@ -1,6 +1,6 @@
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from fastapi import FastAPI, HTTPException, Depends
-from pydantic import BaseModel, EmailStr
+from pydantic import EmailStr, BaseModel
 import hashlib
 import random
 
@@ -10,13 +10,28 @@ engine = create_engine(DATABASE_URL, echo=True)
 app = FastAPI()
 
 class User(SQLModel, table=True):
-    email: EmailStr = Field(primary_key=True, unique=True)
+    id: int = Field(default=None, primary_key=True)  # ID comme clé primaire
+    email: EmailStr = Field(unique=True)  # E-mail unique
     password: str
     iban: str = Field(unique=True)
 
-class UserCreate(BaseModel):
+class UserCreate(SQLModel):  # Basé sur SQLModel, pas besoin de table=True
     email: EmailStr
     password: str
+
+class Money(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    value: float
+
+class Compte(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    money_id: int = Field(foreign_key="money.id")
+
+class Transaction(SQLModel):
+    from_compte_id: int
+    to_compte_id: int
+    amount: float
 
 def init_db():
     SQLModel.metadata.create_all(engine)
@@ -33,7 +48,6 @@ def generate_iban(country_code="FR") -> str:
     branch_code = f"{random.randint(10000, 99999)}"
     account_number = f"{random.randint(10000000000, 99999999999)}"
     check_digits = f"{random.randint(10, 99)}"
-
     return f"{country_code}{check_digits}{bank_code}{branch_code}{account_number}"
 
 @app.on_event("startup")
@@ -42,25 +56,35 @@ def on_startup():
 
 @app.post("/users/", response_model=dict)
 def create_user(user: UserCreate, session: Session = Depends(get_session)):
+    try:
+        # Vérifier si l'utilisateur existe déjà
+        existing_user = session.exec(select(User).where(User.email == user.email)).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="E-mail déjà utilisé.")
 
-    existing_user = session.exec(select(User).where(User.email == user.email)).first()
-    if existing_user:
-        raise HTTPException(status_code=400, detail="E-mail déjà utilisé.")
-
-    iban = generate_iban()
-    while session.exec(select(User).where(User.iban == iban)).first():
+        # Générer un IBAN unique
         iban = generate_iban()
+        while session.exec(select(User).where(User.iban == iban)).first():
+            iban = generate_iban()
 
-    hashed_password = hash_password(user.password)
+        # Hacher le mot de passe
+        hashed_password = hash_password(user.password)
 
-    new_user = User(email=user.email, password=hashed_password, iban=iban)
-    session.add(new_user)
-    session.commit()
-    session.refresh(new_user)
+        # Créer et sauvegarder le nouvel utilisateur
+        new_user = User(email=user.email, password=hashed_password, iban=iban)
+        session.add(new_user)
+        session.commit()
+        session.refresh(new_user)
 
-    return {"email": new_user.email, "iban": new_user.iban}
+        return {"email": new_user.email, "iban": new_user.iban}
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
 
 @app.get("/users/")
 def get_users(session: Session = Depends(get_session)):
-    users = session.exec(select(User)).all()
-    return [{"email": user.email, "iban": user.iban} for user in users]
+    try:
+        users = session.exec(select(User)).all()
+        return [{"email": user.email, "iban": user.iban} for user in users]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
