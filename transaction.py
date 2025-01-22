@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from sqlmodel import SQLModel, Field, Session, create_engine, select
 
 # Configuration de la base de données
-DATABASE_URL = "sqlite:///./database.db"
+DATABASE_URL =  "sqlite:///./database.db"
 engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
 
 # Modèles de la base de données
@@ -27,7 +27,7 @@ app = FastAPI()
 
 # Dépendance pour obtenir une session de base de données
 def get_db():
-    with Session(engine) as session:
+    with Session(engin) as session:
         yield session
 
 # Modèle pour représenter une transaction
@@ -36,7 +36,7 @@ class Transaction(BaseModel):
     to_compte_id: int
     amount: float
 
-@app.post("/transfer/")
+@app.post("/transfer/")  
 async def transfer(transaction: Transaction, db: Session = Depends(get_db)):
     # Récupérer les comptes source et destination
     from_compte = db.exec(select(Compte).where(Compte.id == transaction.from_compte_id)).first()

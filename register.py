@@ -1,9 +1,9 @@
 from fastapi import FastAPI, HTTPException
 from sqlmodel import Session, select
 from typing import List
-from config import User, hash_password, generate_iban, engine  # Importation correcte depuis config.py
+from config import User, hash_password, generate_iban, engine  
 
-# Initialisation de l'application FastAPI
+
 app = FastAPI()
 
 # Route d'inscription
