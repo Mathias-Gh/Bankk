@@ -6,13 +6,13 @@ from pydantic import BaseModel
 router = APIRouter()
 
 class LoginRequest(BaseModel):
-    iban: str
+    email: str
     password: str
 
 @router.post("/login", response_model=dict)
 def login_user(credentials: LoginRequest, session: Session = Depends(get_session)):
 
-    user = session.exec(select(User).where(User.iban == credentials.iban)).first()
+    user = session.exec(select(User).where(User.email == credentials.email)).first()
     
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
