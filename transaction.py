@@ -1,35 +1,31 @@
 from fastapi import APIRouter, HTTPException, Depends
 from pydantic import BaseModel
-from sqlmodel import SQLModel, Field, Session, create_engine, select
+from sqlmodel import SQLModel, Session, select
 from config import User, Money, Compte, Transaction, get_session
 
 router = APIRouter()
 
 @router.post("/transfer/")  
 async def transfer(transaction: Transaction, db: Session = Depends(get_session)):
-    # Récupérer les comptes source et destination
+
     from_compte = db.exec(select(Compte).where(Compte.id == transaction.from_compte_id)).first()
     to_compte = db.exec(select(Compte).where(Compte.id == transaction.to_compte_id)).first()
 
     if not from_compte or not to_compte:
         raise HTTPException(status_code=404, detail="One or both accounts not found.")
 
-    # Récupérer les soldes des comptes
     from_money = db.exec(select(Money).where(Money.id == from_compte.money_id)).first()
     to_money = db.exec(select(Money).where(Money.id == to_compte.money_id)).first()
 
     if not from_money or not to_money:
         raise HTTPException(status_code=404, detail="Money details not found for one or both accounts.")
 
-    # Vérifier le solde suffisant
     if from_money.value < transaction.amount:
         raise HTTPException(status_code=400, detail="Insufficient balance in the source account.")
 
-    # Effectuer la transaction
     from_money.value -= transaction.amount
     to_money.value += transaction.amount
 
-    # Sauvegarder les changements
     db.add(from_money)
     db.add(to_money)
     db.commit()

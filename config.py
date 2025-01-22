@@ -10,12 +10,12 @@ engine = create_engine(DATABASE_URL, echo=True)
 app = FastAPI()
 
 class User(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)  # ID comme clé primaire
-    email: EmailStr = Field(unique=True)  # E-mail unique
+    id: int = Field(default=None, primary_key=True)  
+    email: EmailStr = Field(unique=True)  
     password: str
     iban: str = Field(unique=True)
 
-class UserCreate(SQLModel):  # Basé sur SQLModel, pas besoin de table=True
+class UserCreate(SQLModel):  
     email: EmailStr
     password: str
 
@@ -61,20 +61,16 @@ def on_startup():
 @app.post("/users/", response_model=dict)
 def create_user(user: UserCreate, session: Session = Depends(get_session)):
     try:
-        # Vérifier si l'utilisateur existe déjà
         existing_user = session.exec(select(User).where(User.email == user.email)).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="E-mail déjà utilisé.")
 
-        # Générer un IBAN unique
         iban = generate_iban()
         while session.exec(select(User).where(User.iban == iban)).first():
             iban = generate_iban()
 
-        # Hacher le mot de passe
         hashed_password = hash_password(user.password)
 
-        # Créer et sauvegarder le nouvel utilisateur
         new_user = User(email=user.email, password=hashed_password, iban=iban)
         session.add(new_user)
         session.commit()

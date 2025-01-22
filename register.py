@@ -6,9 +6,6 @@ router = APIRouter()
 
 @router.post("/register", response_model=dict, status_code=201)
 async def register_user(email: str, password: str, session: Session = Depends(get_session)):
-    """
-    Inscrire un utilisateur en générant un IBAN unique et en hachant le mot de passe.
-    """
 
     existing_user = session.exec(select(User).where(User.email == email)).first()
     if existing_user:
