@@ -30,7 +30,7 @@ def get_db():
     with Session(engin) as session:
         yield session
 
-# Modèle pour représenter une transaction
+
 class Transaction(BaseModel):
     from_compte_id: int
     to_compte_id: int
