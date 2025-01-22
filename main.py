@@ -17,12 +17,9 @@ def on_startup():
 app.include_router(register_route, prefix="/api", tags=["Register"])
 app.include_router(transaction_route, prefix="/api", tags=["Transaction"])
 app.include_router(login_route, prefix="/api", tags=["Login"])
-<<<<<<< Updated upstream
 app.include_router(depot_route, prefix="/api", tags=["depot"])
-=======
 app.include_router(openAccount_route, prefix="/api", tags=["openAccount"])
 
->>>>>>> Stashed changes
 
 if __name__ == "__main__":
     import uvicorn

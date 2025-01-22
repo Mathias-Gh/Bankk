@@ -22,12 +22,12 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session))
         raise HTTPException(status_code=404, detail="Money details not found for one or both accounts.")
 
     # Vérifier le solde suffisant
-    if from_money.value < transaction.amount:
+    if from_money.money_value< transaction.amount:
         raise HTTPException(status_code=400, detail="Insufficient balance in the source account.")
 
     # Effectuer la transaction
-    from_money.value -= transaction.amount
-    to_money.value += transaction.amount
+    from_money.money_value -= transaction.amount
+    to_money.money_value += transaction.amount
 
     # Sauvegarder les changements
     db.add(from_money)
@@ -39,6 +39,6 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session))
         "from_compte_id": transaction.from_compte_id,
         "to_compte_id": transaction.to_compte_id,
         "amount": transaction.amount,
-        "updated_from_balance": from_money.value,
-        "updated_to_balance": to_money.value,
+        "updated_from_balance": from_money.money_value,
+        "updated_to_balance": to_money.money_value,
     }
