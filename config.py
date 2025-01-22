@@ -5,7 +5,7 @@ import hashlib
 import random
 
 DATABASE_URL = "sqlite:///./database.db"
-engine = create_engine(DATABASE_URL, echo=True)
+engine =  create_engine(DATABASE_URL, echo=True)
 
 app = FastAPI()
 
