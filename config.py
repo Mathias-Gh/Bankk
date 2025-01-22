@@ -37,6 +37,10 @@ class Depot(SQLModel):
     to_compte_id: int
     amount: float
 
+class Depot(SQLModel):
+    to_compte_id: int
+    amount: float
+
 def init_db():
     SQLModel.metadata.create_all(engine)
 
