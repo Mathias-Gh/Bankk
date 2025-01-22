@@ -27,7 +27,7 @@ app = FastAPI()
 
 # Dépendance pour obtenir une session de base de données
 def get_db():
-    with Session(engin) as session:
+    with Session(engine) as session:
         yield session
 
 
