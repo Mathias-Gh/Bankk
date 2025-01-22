@@ -37,9 +37,9 @@ class Depot(SQLModel):
     to_compte_id: int
     amount: float
 
-class Depot(SQLModel):
-    to_compte_id: int
-    amount: float
+class LoginRequest(BaseModel):
+    email: str
+    password: str
 
 def init_db():
     SQLModel.metadata.create_all(engine)

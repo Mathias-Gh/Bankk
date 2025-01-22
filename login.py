@@ -1,18 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from config import User, get_session, hash_password
+from config import User, get_session, hash_password, LoginRequest
 from pydantic import BaseModel
 
 router = APIRouter()
 
-class LoginRequest(BaseModel):
-    email: str
-    password: str
-
 @router.post("/login", response_model=dict)
 def login_user(credentials: LoginRequest, session: Session = Depends(get_session)):
 
-    user = session.exec(select(User).where(User.email == credentials.email)).first()
     user = session.exec(select(User).where(User.email == credentials.email)).first()
     
     if not user:
