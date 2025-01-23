@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
 from config import Compte, Depot, Logs, get_session
+from datetime import datetime
 
 router = APIRouter()
 
@@ -17,7 +18,7 @@ async def depot(depot: Depot, db: Session = Depends(get_session)):
     new_log = Logs(
         logs_depot_user=depot.to_account_id,
         logs_depot_amount=depot.amount,
-        log_type="deposit"
+        created_at=datetime.utcnow(),
     )
 
     try:

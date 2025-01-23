@@ -7,26 +7,26 @@ router = APIRouter()
 @router.get("/listTransaction/{iban_account}", response_model=list)
 async def get_account_transactions(iban_account: str, session: Session = Depends(get_session)):
     try:
-        # Vérification si l'IBAN existe dans la table Compte
+
         account = session.exec(select(Compte).where(Compte.iban_account == iban_account)).first()
         if not account:
             raise HTTPException(status_code=404, detail="IBAN introuvable.")
 
-        # Récupérer toutes les transactions liées à cet IBAN (en tant qu'expéditeur ou destinataire)
+
         from_logs = session.exec(select(Logs).where(Logs.from_log_transaction == iban_account)).all()
         to_logs = session.exec(select(Logs).where(Logs.to_log_transaction == iban_account)).all()
 
-        # Combiner les logs des deux requêtes
+
         all_logs = from_logs + to_logs
 
-        # Vérification s'il n'y a pas de transactions
+
         if not all_logs:
             raise HTTPException(status_code=404, detail="Aucune transaction trouvée pour cet IBAN.")
 
-        # Trier les logs (par exemple par montant ou par ordre chronologique si vous avez un champ `timestamp`)
+
         sorted_logs = sorted(all_logs, key=lambda log: log.logs_transaction_amount, reverse=True)
 
-        # Retourner une liste formatée des logs
+
         return [
             {
                 "transaction_id": log.id,

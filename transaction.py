@@ -1,47 +1,38 @@
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from sqlmodel import Session, select
-from config import Compte, Logs, Transaction, get_session
+from config import Compte, Logs_transaction, Transaction, get_session
 from datetime import datetime
 import time
 
 router = APIRouter()
 
-# Fonction qui effectue la transaction après un délai de 10 secondes
-def confirm_transaction(transaction, db: Session, transaction_log_id):
-    time.sleep(10)  # Simulation de 10 secondes d'attente
+def confirm_transaction(transaction: Transaction, transaction_log_id: int):
+    from config import get_session
 
-    # Récupérer à nouveau les objets log et les comptes depuis la base de données
-    transaction_log = db.exec(select(Logs).where(Logs.id == transaction_log_id)).first()
-    if not transaction_log:
-        return "Transaction non trouvée."
+    time.sleep(10) 
 
-    # Si la transaction a été annulée avant la confirmation
-    if transaction_log.status == "canceled":
-        return "Transaction annulée avant confirmation."
+    with next(get_session()) as db:
+        transaction_log = db.exec(select(Logs_transaction).where(Logs_transaction.id == transaction_log_id)).first()
+        if not transaction_log:
+            return "Transaction non trouvée."
 
-    # Récupérer à nouveau les comptes pour les mettre à jour
-    from_iban = db.exec(select(Compte).where(Compte.iban_account == transaction.from_iban_account)).first()
-    to_iban = db.exec(select(Compte).where(Compte.iban_account == transaction.to_iban_account)).first()
+        if transaction_log.status == "canceled":
+            return "Transaction annulée avant confirmation."
 
-    if not from_iban or not to_iban:
-        return "Compte source ou destinataire introuvable."
+        from_iban = db.exec(select(Compte).where(Compte.iban_account == transaction.from_iban_account)).first()
+        to_iban = db.exec(select(Compte).where(Compte.iban_account == transaction.to_iban_account)).first()
 
-    # Effectuer la transaction si elle est toujours en attente
-    if transaction_log.status == "pending":
+        if not from_iban or not to_iban:
+            return "Compte source ou destinataire introuvable."
+
         from_iban.money_value -= transaction.amount
         to_iban.money_value += transaction.amount
 
-        # Mise à jour du statut de la transaction
         transaction_log.status = "completed"
-        
-        # Ajout des nouvelles valeurs dans la session
+        db.add(transaction_log)
         db.add(from_iban)
         db.add(to_iban)
-        db.add(transaction_log)
-        
-        db.commit()  # Sauvegarde les changements
-        db.refresh(from_iban)  # Rafraîchir les objets
-        db.refresh(to_iban)  # Rafraîchir les objets
+        db.commit()
 
         return {
             "message": "Transaction effectuée avec succès après 10 secondes.",
@@ -52,10 +43,6 @@ def confirm_transaction(transaction, db: Session, transaction_log_id):
             "updated_to_balance": to_iban.money_value,
         }
 
-    return "Erreur lors de la confirmation de la transaction."
-
-
-# Route de transfert
 @router.post("/transfer/")
 async def transfer(transaction: Transaction, db: Session = Depends(get_session), background_tasks: BackgroundTasks = BackgroundTasks()):
 
@@ -74,21 +61,19 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session),
     if from_iban.money_value < transaction.amount:
         raise HTTPException(status_code=400, detail="Solde insuffisant dans le compte source.")
 
-    # Créer un log de la transaction en attente
-    new_log = Logs(
+    new_log = Logs_transaction(
         from_log_transaction=transaction.from_iban_account,
         to_log_transaction=transaction.to_iban_account,
         logs_transaction_amount=transaction.amount,
         log_type="transaction",
-        status="pending",  # La transaction est en attente
+        status="pending",
         created_at=datetime.utcnow(),
     )
 
     db.add(new_log)
     db.commit()
 
-    # Démarrer la tâche en arrière-plan pour confirmer la transaction après 10 secondes
-    background_tasks.add_task(confirm_transaction, transaction, db, new_log.id)
+    background_tasks.add_task(confirm_transaction, transaction, new_log.id)
 
     return {
         "message": "La transaction est en attente de confirmation pendant 10 secondes.",
@@ -97,10 +82,9 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session),
         "amount": transaction.amount,
     }
 
-# Route pour annuler une transaction
 @router.post("/cancel_transaction/")
 async def cancel_transaction(transaction_id: int, db: Session = Depends(get_session)):
-    log = db.exec(select(Logs).where(Logs.id == transaction_id)).first()
+    log = db.exec(select(Logs_transaction).where(Logs_transaction.id == transaction_id)).first()
 
     if log and log.status == "pending":
         log.status = "canceled"
