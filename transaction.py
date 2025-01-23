@@ -57,6 +57,6 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session))
         "from_iban_account": transaction.from_iban_account,
         "to_iban_account": transaction.to_iban_account,
         "amount": transaction.amount,
-        "updated_from_balance": from_money.money_value,
-        "updated_to_balance": to_money.money_value,
+        "updated_from_balance": from_iban.money_value,
+        "updated_to_balance": to_iban.money_value,
     }
