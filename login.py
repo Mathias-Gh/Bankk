@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
 from config import User, get_session, LoginRequest
-from pydantic import BaseModel
 from utils import hash_password, create_access_token
+
 
 router = APIRouter()
 
@@ -19,7 +19,6 @@ def login_user(credentials: LoginRequest, session: Session = Depends(get_session
     
     # Créer un token JWT
     token = create_access_token(data={"sub": user.email})
-
 
     return {
         "access_token": token,
