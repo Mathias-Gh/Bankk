@@ -25,6 +25,3 @@ def generate_iban(country_code="FR") -> str:
     check_digits = f"{random.randint(10, 99)}"
     return f"{country_code}{check_digits}{bank_code}{branch_code}{account_number}"
 
-def get_session():
-    with Session(engine) as session:
-        yield session

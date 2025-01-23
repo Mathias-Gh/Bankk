@@ -26,5 +26,4 @@ def login_user(credentials: LoginRequest, session: Session = Depends(get_session
         "token_type": "bearer",
         "message": "Connexion réussie",
         "email": user.email,
-        "iban": user.iban
     }

@@ -41,8 +41,7 @@ class Logs(SQLModel, table=True):
     # logs_account_id: str
 
 
-class Transaction(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)
+class Transaction(SQLModel):
     from_iban_account: str
     to_iban_account: str
     amount: float
@@ -66,6 +65,10 @@ class AccountRequest(SQLModel):
 
 def init_db():
     SQLModel.metadata.create_all(engine)
+
+def get_session():
+    with Session(engine) as session:
+        yield session
 
 @app.on_event("startup")
 def on_startup():

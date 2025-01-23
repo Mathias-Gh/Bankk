@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from config import Compte, CreateAccountRequest, get_session, generate_iban
+from config import Compte, CreateAccountRequest, get_session
+from utils import generate_iban
 
 router = APIRouter()
 

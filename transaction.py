@@ -1,7 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
-from pydantic import BaseModel
-from sqlmodel import SQLModel, Field, Session, create_engine, select
-from config import User, Compte, Logs, Transaction, get_session
+from sqlmodel import Field, Session, select
+from config import Compte, Logs, Transaction, get_session
 
 router = APIRouter()
 
@@ -40,11 +39,18 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session))
         logs_transaction_amount=transaction.amount,
         log_type="transaction"
     )
-    db.add(new_log)
+
+    
 
     db.add(from_money)
     db.add(to_money)
+    db.add(new_log)
+
     db.commit()
+
+    db.refresh(from_money)  # Rafraîchir les comptes
+    db.refresh(to_money)
+    
 
     return {
         "message": "Transaction completed successfully.",
