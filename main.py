@@ -8,6 +8,7 @@ from login import router as login_route
 from openAccount import router as openAccount_route
 from account import router as account_route
 from listAccount import router as listAccount_route
+from listTransaction import router as listTransaction_route
 
 
 app = FastAPI()
@@ -23,7 +24,8 @@ app.include_router(depot_route, prefix="/api", tags=["depot"])
 app.include_router(openAccount_route, prefix="/api", tags=["openAccount"])
 app.include_router(account_route, prefix="/api", tags=["account"])
 app.include_router(listAccount_route, prefix="/api", tags=["listAccount"])
-
+app.include_router(listTransaction_route, prefix="/api", tags=["listTransaction"])
+app.include_router(listTransaction_route, prefix="/api", tags=["listTransaction"])
 
 
 if __name__ == "__main__":
