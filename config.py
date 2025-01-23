@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import EmailStr, BaseModel
+from datetime import datetime
 
 DATABASE_URL = "sqlite:///./database.db"
 engine = create_engine(DATABASE_URL, echo=True)
@@ -11,11 +12,12 @@ class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)  
     email: EmailStr = Field(unique=True)  
     password: str
-    # activated: bool = Field(default=False)
+    # created_at: datetime = Field(default_factory=datetime.utcnow)  # Timestamp par défaut
 
 class UserCreate(SQLModel):  
     email: EmailStr
     password: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)  # Timestamp par défaut
     # created_at: str
 
 class Compte(SQLModel, table=True):
@@ -31,10 +33,11 @@ class Logs(SQLModel, table=True):
     from_log_transaction: str | None = Field(default=None)
     to_log_transaction: str | None = Field(default=None)
     logs_transaction_amount: float | None = Field(default=None)
-
     logs_depot_user: int | None = Field(default=None)
     logs_depot_amount: float | None = Field(default=None)
     log_type: str 
+    status: str = Field(default="pending") 
+    created_at: str
 
     # logs_create_user: str 
 
