@@ -10,35 +10,57 @@ engine = create_engine(DATABASE_URL, echo=True)
 app = FastAPI()
 
 class User(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)  # ID comme clé primaire
-    email: EmailStr = Field(unique=True)  # E-mail unique
+    id: int = Field(default=None, primary_key=True)  
+    email: EmailStr = Field(unique=True)  
     password: str
-    iban: str = Field(unique=True)
+    # activated: bool = Field(default=False)
 
-class UserCreate(SQLModel):  # Basé sur SQLModel, pas besoin de table=True
+class UserCreate(SQLModel):  
     email: EmailStr
     password: str
+    # created_at: str
 
 class Compte(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     user_id: int = Field(foreign_key="user.id")
-    money_value: float
+    iban_account: str = Field(unique=True)
+    money_value: float | None = Field(default=None)
+    first: bool = Field(default=False)
 
-class Transaction(SQLModel):
-    from_compte_id: int
-    to_compte_id: int
+class Logs(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+
+    from_log_transaction: str | None = Field(default=None)
+    to_log_transaction: str | None = Field(default=None)
+    logs_transaction_amount: float | None = Field(default=None)
+
+    logs_depot_user: int | None = Field(default=None)
+    logs_depot_amount: float | None = Field(default=None)
+    log_type: str 
+
+    # logs_create_user: str 
+
+    # logs_account_id: str
+
+
+class Transaction(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    from_iban_account: str
+    to_iban_account: str
     amount: float
 
 class Depot(SQLModel):
-    to_compte_id: int
+    to_account_id: int
     amount: float
 
 class LoginRequest(BaseModel):
     email: str
     password: str
+    # connected: bool = Field(foreign_key="user.activated")
 
 class CreateAccountRequest(SQLModel):
     user_id: int
+    iban_account: str
     money_value: float
 
 def init_db():
