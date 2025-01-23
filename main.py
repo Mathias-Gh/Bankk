@@ -7,6 +7,7 @@ from depot import router as depot_route
 from login import router as login_route
 from openAccount import router as openAccount_route
 from account import router as account_route
+from listAccount import router as listAccount_route
 
 
 app = FastAPI()
@@ -21,6 +22,8 @@ app.include_router(login_route, prefix="/api", tags=["Login"])
 app.include_router(depot_route, prefix="/api", tags=["depot"])
 app.include_router(openAccount_route, prefix="/api", tags=["openAccount"])
 app.include_router(account_route, prefix="/api", tags=["account"])
+app.include_router(listAccount_route, prefix="/api", tags=["listAccount"])
+
 
 
 if __name__ == "__main__":

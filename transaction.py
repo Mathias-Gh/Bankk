@@ -38,19 +38,13 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session))
         to_log_transaction=transaction.to_iban_account,
         logs_transaction_amount=transaction.amount,
         log_type="transaction"
-    )
-
-    
+    )    
 
     db.add(from_money)
     db.add(to_money)
     db.add(new_log)
 
     db.commit()
-
-    db.refresh(from_money)  # Rafraîchir les comptes
-    db.refresh(to_money)
-    
 
     return {
         "message": "Transaction completed successfully.",
