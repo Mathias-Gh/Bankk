@@ -16,7 +16,9 @@ def get_account_balance(compte_id: int, session: Session = Depends(get_session))
             raise HTTPException(status_code=404, detail="Compte non trouvé")
 
         # Retourner le solde du compte
-        return {"compte_id": compte.id, "solde": compte.money_value}
+        return {"compte_id": compte.id, 
+                "solde": compte.money_value,
+                "iban": compte.iban_account}
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
