@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from config import User, get_session, UserCreate
+from config import User, get_session, UserCreate, CreateAccountRequest, Compte
 from utils import generate_iban, hash_password
 router = APIRouter()
 
