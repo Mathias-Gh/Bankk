@@ -1,14 +1,19 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from config import Compte, Logs, Logs_transaction, get_session
+from config import Compte, Logs, User, Logs_transaction, get_session
 from datetime import datetime
 
 router = APIRouter()
 
-@router.post("/close_account/")
-async def close_account(iban_account: str, db: Session = Depends(get_session)):
+@router.post("/close_account/{user_id}")
+async def close_account(iban_account: str, user_id: str, db: Session = Depends(get_session)):
 
     account = db.exec(select(Compte).where(Compte.iban_account == iban_account)).first()
+
+    user = db.exec(select(User).where(User.id == user_id)).first()
+
+    if account.user_id != user.id:
+        raise HTTPException(status_code=404, detail="c'est pas ton compte, pas bien")
 
     if not account:
         raise HTTPException(status_code=404, detail="Compte non trouvé.")
