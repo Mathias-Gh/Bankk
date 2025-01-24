@@ -71,6 +71,15 @@ def get_session():
     with Session(engine) as session:
         yield session
 
+# config.py
+import re
+
+def validate_iban(iban: str) -> bool:
+    """Valide un IBAN en vérifiant qu'il respecte le format standard."""
+    # Expression régulière pour valider l'IBAN (format standard)
+    iban_regex = re.compile(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]{4,30}$')
+    return bool(iban_regex.match(iban))
+
 @app.on_event("startup")
 def on_startup():
     init_db()

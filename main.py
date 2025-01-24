@@ -10,6 +10,7 @@ from account import router as account_route
 from listAccount import router as listAccount_route
 from listTransaction import router as listTransaction_route
 from close_account import router as close_account_route
+from beneficiaire import router as beneficiaire_route
 
 
 app = FastAPI()
@@ -21,11 +22,13 @@ def on_startup():
 app.include_router(register_route, prefix="/api", tags=["Register"])
 app.include_router(transaction_route, prefix="/api", tags=["Transaction"])
 app.include_router(login_route, prefix="/api", tags=["Login"])
+app.include_router(beneficiaire_route, prefix="/api", tags=["Beneficiarie"])
 app.include_router(depot_route, prefix="/api", tags=["depot"])
 app.include_router(openAccount_route, prefix="/api", tags=["openAccount"])
 app.include_router(account_route, prefix="/api", tags=["account"])
 app.include_router(listAccount_route, prefix="/api", tags=["listAccount"])
 app.include_router(close_account_route, prefix="/api", tags=["Close_Account"])
+app.include_router(listTransaction_route, prefix="/api", tags=["listTransaction"])
 
 
 if __name__ == "__main__":
