@@ -52,6 +52,9 @@ async def transfer(transaction: Transaction, db: Session = Depends(get_session),
     from_iban = db.exec(select(Compte).where(Compte.iban_account == transaction.from_iban_account)).first()
     to_iban = db.exec(select(Compte).where(Compte.iban_account == transaction.to_iban_account)).first()
 
+    if from_iban.closed or to_iban.closed:
+        raise HTTPException(status_code=400, detail="Un ou les deux comptes sont fermés.")
+
     if not from_iban or not to_iban:
         raise HTTPException(status_code=404, detail="Un ou les deux comptes n'ont pas été trouvés.")
 

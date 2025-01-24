@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import EmailStr, BaseModel
+import re
 from datetime import datetime
 from zoneinfo import ZoneInfo
 
@@ -12,11 +13,11 @@ app = FastAPI()
 class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)  
     email: EmailStr = Field(unique=True)  
-    password: str
+    password: str = Field(min_length=8)
 
 class UserCreate(SQLModel):  
     email: EmailStr
-    password: str
+    password: str 
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Compte(SQLModel, table=True):
@@ -27,6 +28,18 @@ class Compte(SQLModel, table=True):
     first: bool = Field(default=False)
     closed: bool = Field(default=False)
     datecreated : datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Europe/Paris")))
+
+class Beneficiary(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id")
+    name: str  # Le nom du bénéficiaire
+    added_date: datetime = Field(default_factory=datetime.utcnow)
+
+class BeneficiaryIBAN(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    beneficiary_id: int = Field(foreign_key="beneficiary.id")  # Lié à un bénéficiaire
+    iban: str = Field(unique=True)  # IBAN unique
+    added_date: datetime = Field(default_factory=datetime.utcnow)  # Date d'ajout
 
 class Logs(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -71,8 +84,6 @@ def get_session():
     with Session(engine) as session:
         yield session
 
-# config.py
-import re
 
 def validate_iban(iban: str) -> bool:
     """Valide un IBAN en vérifiant qu'il respecte le format standard."""

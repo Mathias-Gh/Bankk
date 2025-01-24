@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from config import Logs, Compte, get_session
+from config import Logs_transaction, Compte, get_session
 
 router = APIRouter()
 
@@ -13,8 +13,8 @@ async def get_account_transactions(iban_account: str, session: Session = Depends
             raise HTTPException(status_code=404, detail="IBAN introuvable.")
 
 
-        from_logs = session.exec(select(Logs).where(Logs.from_log_transaction == iban_account)).all()
-        to_logs = session.exec(select(Logs).where(Logs.to_log_transaction == iban_account)).all()
+        from_logs = session.exec(select(Logs_transaction).where(Logs_transaction.from_log_transaction == iban_account)).all()
+        to_logs = session.exec(select(Logs_transaction).where(Logs_transaction.to_log_transaction == iban_account)).all()
 
 
         all_logs = from_logs + to_logs
@@ -32,6 +32,7 @@ async def get_account_transactions(iban_account: str, session: Session = Depends
                 "transaction_id": log.id,
                 "from": log.from_log_transaction,
                 "type": log.log_type,
+                "status": log.status,
             }
             for log in sorted_logs
         ]
@@ -46,7 +47,7 @@ def get_transaction_details(log_id: int, iban_account: str, session: Session = D
         if not account:
             raise HTTPException(status_code=404, detail="IBAN introuvable.")
 
-        transaction = session.exec(select(Logs).where(Logs.id == log_id)).first()
+        transaction = session.exec(select(Logs_transaction).where(Logs_transaction.id == log_id)).first()
         if not transaction:
             raise HTTPException(status_code=404, detail="Transaction introuvable.")
 

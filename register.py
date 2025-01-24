@@ -10,6 +10,9 @@ async def create_user(user: UserCreate, first_account: CreateAccountRequest, ses
         existing_user = session.exec(select(User).where(User.email == user.email)).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="E-mail déjà utilisé.")
+        
+        if len(user.password) < 8:
+            raise HTTPException(status_code=400, detail="Le mot de passe doit contenir au moins 8 caractères.")
 
         hashed_password = hash_password(user.password)
 
