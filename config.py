@@ -1,6 +1,7 @@
 from sqlmodel import SQLModel, Field, create_engine, Session, select
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import EmailStr, BaseModel
+from datetime import datetime
 
 DATABASE_URL = "sqlite:///./database.db"
 engine = create_engine(DATABASE_URL, echo=True)
@@ -11,12 +12,11 @@ class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)  
     email: EmailStr = Field(unique=True)  
     password: str
-    # activated: bool = Field(default=False)
 
 class UserCreate(SQLModel):  
     email: EmailStr
     password: str
-    # created_at: str
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Compte(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -24,22 +24,22 @@ class Compte(SQLModel, table=True):
     iban_account: str = Field(unique=True)
     money_value: float | None = Field(default=None)
     first: bool = Field(default=False)
+    closed: bool = Field(default=False)  
 
 class Logs(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
-
-    from_log_transaction: str | None = Field(default=None)
-    to_log_transaction: str | None = Field(default=None)
-    logs_transaction_amount: float | None = Field(default=None)
-
     logs_depot_user: int | None = Field(default=None)
     logs_depot_amount: float | None = Field(default=None)
-    log_type: str 
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
-    # logs_create_user: str 
-
-    # logs_account_id: str
-
+class Logs_transaction(SQLModel, table=True):
+    id: int = Field(default=None, primary_key=True)
+    from_log_transaction: str
+    to_log_transaction: str
+    logs_transaction_amount: float
+    log_type: str  
+    status: str  
+    created_at: datetime = Field(default_factory=datetime.utcnow)
 
 class Transaction(SQLModel):
     from_iban_account: str
@@ -53,7 +53,6 @@ class Depot(SQLModel):
 class LoginRequest(BaseModel):
     email: str
     password: str
-    # connected: bool = Field(foreign_key="user.activated")
 
 class CreateAccountRequest(SQLModel):
     user_id: int

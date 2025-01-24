@@ -1,24 +1,32 @@
-# account.py
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from config import Compte, get_session  # Assurez-vous d'importer le modèle Compte
+from config import Compte, User, get_session
 
 router = APIRouter()
 
-@router.get("/account/{compte_id}", response_model=dict)
-def get_account_balance(compte_id: int, session: Session = Depends(get_session)):
+@router.get("/account/{user_id}/{compte_id}", response_model=dict)
+def get_account_balance(compte_id: int, user_id: int, session: Session = Depends(get_session)):
     try:
-        # Récupérer le compte à partir de l'ID
         compte = session.exec(select(Compte).where(Compte.id == compte_id)).first()
 
-        # Vérifier si le compte existe
         if not compte:
             raise HTTPException(status_code=404, detail="Compte non trouvé")
 
-        # Retourner le solde du compte
-        return {"compte_id": compte.id, 
-                "solde": compte.money_value,
-                "iban": compte.iban_account}
+        user = session.exec(select(User).where(User.id == user_id)).first()
+        if not user:
+            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+
+        if compte.user_id != user.id:
+            raise HTTPException(status_code=403, detail="Accès interdit : ce compte n'appartient pas à cet utilisateur")
+
+        if compte.closed:
+            raise HTTPException(status_code=400, detail="Ce compte est clôturé et ne peut plus être consulté.")
+
+        return {
+            "compte_id": compte.id,
+            "solde": compte.money_value,
+            "iban": compte.iban_account
+        }
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

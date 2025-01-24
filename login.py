@@ -17,7 +17,6 @@ def login_user(credentials: LoginRequest, session: Session = Depends(get_session
     if user.password != hash_password(credentials.password):
         raise HTTPException(status_code=403, detail="Mot de passe incorrect")
     
-    # Créer un token JWT
     token = create_access_token(data={"sub": user.email})
 
     return {
