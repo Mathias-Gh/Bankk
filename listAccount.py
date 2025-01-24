@@ -14,7 +14,7 @@ def get_account_balance(user_id: int, session: Session = Depends(get_session)):
             raise HTTPException(status_code=404, detail="Aucun compte trouvé pour cet utilisateur")
 
 
-        return [{"id_de_l_utilisateur": user_id, "solde": compte.money_value} for compte in comptes]
+        return [{"id_de_l_utilisateur": user_id, "Date": compte.datecreated} for compte in comptes]
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")

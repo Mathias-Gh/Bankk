@@ -2,6 +2,7 @@ from sqlmodel import SQLModel, Field, create_engine, Session, select
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import EmailStr, BaseModel
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 DATABASE_URL = "sqlite:///./database.db"
 engine = create_engine(DATABASE_URL, echo=True)
@@ -24,13 +25,14 @@ class Compte(SQLModel, table=True):
     iban_account: str = Field(unique=True)
     money_value: float | None = Field(default=None)
     first: bool = Field(default=False)
-    closed: bool = Field(default=False)  
+    closed: bool = Field(default=False)
+    datecreated : datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Europe/Paris")))
 
 class Logs(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     logs_depot_user: int | None = Field(default=None)
     logs_depot_amount: float | None = Field(default=None)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Europe/Paris")))
 
 class Logs_transaction(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -39,7 +41,7 @@ class Logs_transaction(SQLModel, table=True):
     logs_transaction_amount: float
     log_type: str  
     status: str  
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Europe/Paris")))
 
 class Transaction(SQLModel):
     from_iban_account: str
