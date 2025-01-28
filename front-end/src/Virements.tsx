@@ -1,9 +1,9 @@
 import './App.css'
-function Dashboard() {
+function Virements() {
   return(
     <>
     </>
   )
 }
 
-export default Dashboard;
+export default Virements;
