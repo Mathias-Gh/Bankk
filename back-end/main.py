@@ -11,9 +11,21 @@ from listAccount import router as listAccount_route
 from listTransaction import router as listTransaction_route
 from close_account import router as close_account_route
 from beneficiaire import router as beneficiaire_route
+from fastapi.middleware.cors import CORSMiddleware
 
 
 app = FastAPI()
+
+origin = [
+    "http://localhost:5173/"
+]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origine=origin,
+    allow_credentials=True,
+    allow_methods=[*],
+    allow_headers=[*],
+)
 
 @app.on_event("startup")
 def on_startup():
