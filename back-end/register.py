@@ -4,7 +4,7 @@ from config import User, get_session, UserCreate, CreateAccountRequest, Compte
 from utils import generate_iban, hash_password
 router = APIRouter()
 
-@router.post("/users/", response_model=dict)
+@router.post("/register/", response_model=dict)
 async def create_user(user: UserCreate, first_account: CreateAccountRequest, session: Session = Depends(get_session)):
     try:
         existing_user = session.exec(select(User).where(User.email == user.email)).first()

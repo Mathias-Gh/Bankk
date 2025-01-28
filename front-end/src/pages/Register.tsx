@@ -1,4 +1,6 @@
 import { useState } from "react";
+import axios from 'axios'
+
 const Register: React.FC = () => {
   const [formData, setFormData] = useState({
     firstName: "",
@@ -7,6 +9,8 @@ const Register: React.FC = () => {
     password: "",
     confirmPassword: "",
   });
+
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
