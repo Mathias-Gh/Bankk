@@ -1,9 +1,9 @@
 import './App.css'
-function Dashboard() {
+function MonProfil() {
   return(
     <>
     </>
   )
 }
 
-export default Dashboard;
+export default MonProfil;
