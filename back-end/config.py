@@ -65,7 +65,7 @@ class Depot(SQLModel):
     to_account_id: int
     amount: float
 
-class LoginRequest(BaseModel):
+class LoginRequest(SQLModel):
     email: str
     password: str
 

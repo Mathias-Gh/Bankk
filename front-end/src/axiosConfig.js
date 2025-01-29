@@ -24,6 +24,5 @@ axiosConfig.interceptors.request.use(
       return Promise.reject(error);
     }
   );
-  
-
+    
 export default axiosConfig;

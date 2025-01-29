@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosConfig from '../axiosConfig';
-import toast from 'react-hot-toast';
 import LoginForm from '../components/LoginForm';
+import toast from 'react-hot-toast';
 
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -19,9 +19,9 @@ const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
+console.log(formData)
     try {
-      const response = await axiosConfig.get('/login', formData);
+      const response = await axiosConfig.post('/login', formData);
 
       const { access_token } = response.data;
 
