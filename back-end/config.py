@@ -12,11 +12,12 @@ app = FastAPI()
 
 class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)  
-    email: EmailStr = Field(unique=True)  
+    email: str = Field(unique=True)  
     password: str = Field(min_length=8)
 
-class UserCreate(SQLModel):  
-    email: EmailStr
+class UserCreate(SQLModel): 
+
+    email: str
     password: str 
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
