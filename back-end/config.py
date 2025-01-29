@@ -15,7 +15,8 @@ class User(SQLModel, table=True):
     email: EmailStr = Field(unique=True)  
     password: str = Field(min_length=8)
 
-class UserCreate(SQLModel):  
+class UserCreate(SQLModel): 
+     
     email: EmailStr
     password: str 
     created_at: datetime = Field(default_factory=datetime.utcnow)

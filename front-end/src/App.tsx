@@ -1,14 +1,14 @@
 import{BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
-import Dashboard from './Dashboard.tsx'
+import Dashboard from './pages/Dashboard.tsx'
 import NavBar from './components/NavBar.tsx'
 import Home from './pages/Home.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
-import Transactions from './Transactions.tsx'
-import Virements from './Virements.tsx'
-import MesComptes from './MesComptes.tsx'
-import MonProfil from './MonProfil.tsx'
+import Transactions from './pages/Transactions.tsx'
+import Virements from './pages/Virements.tsx'
+import MesComptes from './pages/MesComptes.tsx'
+import MonProfil from './pages/MonProfil.tsx'
 
 
 function App() {
