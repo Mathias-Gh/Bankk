@@ -1,4 +1,4 @@
-import axiosConfig from "../axios.config";
+import axiosConfig from "../axiosConfig";
 
 export async function Register(email, password) {
     axiosConfig.post('/register', {email, password})

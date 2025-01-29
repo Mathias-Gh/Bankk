@@ -1,18 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import axiosConfig from "../axiosConfig"
 import RegisterForm from "../components/RegisterForm";
 import toast from 'react-hot-toast';
-
-
+import axios from "axios";
 const Register: React.FC = () => {
-
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,29 +19,22 @@ const Register: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData)
 
     try {
-        const response = await axios.post('/api/auth', { 
-            email: formData.email,
-            password: formData.password,
-         });
-  
-        toast.success('Bravo tu es inscrit, go te connecté');
-        console.log(response.data);
-  
-        navigate('/login');
-      } catch (error) {
+      const response = await axiosConfig.post('/register', {
+        email: formData.email,
+        password: formData.password,
+      });
 
-        console.error(error);
-        toast.error('Échec de l\'inscription. Vérifiez vos identifiants.');
-      }
+      toast.success('Bravo, vous êtes inscrit. Veuillez vous connecter.');
+      console.log(response.data);
 
-    if (formData.password !== formData.confirmPassword) {
-      alert("Les mots de passe ne correspondent pas.");
-      return;
+      navigate('/login');
+    } catch (error) {
+      console.error(error);
+      toast.error('Échec de l\'inscription. Vérifiez vos identifiants.');
     }
-
-    console.log("Form Data: ", formData);
   };
 
   return (

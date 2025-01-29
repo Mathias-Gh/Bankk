@@ -18,7 +18,7 @@ const Login: React.FC = () => {
     
     try {
       // Appel à l'API backend pour l'authentification
-      const response = await axios.post('/api/auth', { email, password });
+      const response = await axios.post('/api/login', { email, password });
 
       // Succès : tu peux rediriger l'utilisateur ou afficher un message
       toast.success('Connexion réussie');

@@ -31,18 +31,6 @@ const RegisterForm: React.FC<RegisterFormProps>  = ({ formData, handleChange, ha
               placeholder="Password"
             />
           </div>
-          <div>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              required
-              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Confirm Password"
-            />
-          </div>
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 transition duration-300"
