@@ -39,3 +39,6 @@ async def create_user(user: UserCreate, session: Session = Depends(get_session))
     except Exception as e:
         session.rollback()
         raise HTTPException(status_code=500, detail=f"An error occurred: {str(e)}")
+        raise HTTPException(status_code=400, detail="E-mail déjà utilisé.")
+        raise HTTPException(status_code=400, detail="Le mot de passe doit contenir au moins 8 caractères.")
+

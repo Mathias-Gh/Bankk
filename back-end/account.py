@@ -5,7 +5,7 @@ from config import Compte, User, get_session
 router = APIRouter()
 
 @router.get("/account/{user_id}/{compte_id}", response_model=dict)
-def get_account_balance(compte_id: int, user_id: int, session: Session = Depends(get_session)):
+def get_account_balance(compte_id: int, token: str, session: Session = Depends(get_session)):
     try:
         compte = session.exec(select(Compte).where(Compte.id == compte_id)).first()
 

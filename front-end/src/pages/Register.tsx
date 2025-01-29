@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axiosConfig from "../axiosConfig"
 import RegisterForm from "../components/RegisterForm";
 import toast from 'react-hot-toast';
-import axios from "axios";
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
 
@@ -22,10 +22,7 @@ const Register: React.FC = () => {
     console.log(formData)
 
     try {
-      const response = await axiosConfig.post('/register', {
-        email: formData.email,
-        password: formData.password,
-      });
+      const response = await axiosConfig.post('/register', formData);
 
       toast.success('Bravo, vous êtes inscrit. Veuillez vous connecter.');
       console.log(response.data);

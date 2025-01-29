@@ -1,36 +1,34 @@
 import React from "react"
 import { LoginFormProps } from "../type/LoginType"
 
-const LoginForm: React.FC<LoginFormProps>  = ({ formData, handleLogin }) => {
+const LoginForm: React.FC<LoginFormProps>  = ({ formData, handleLogin, handleChange }) => {
     return(
         <div className="flex items-center justify-center min-h-screen bg-gray-100">
             <div className="w-full max-w-md p-8 space-y-4 bg-white shadow-lg rounded-2xl">
-            <h2 className="text-2xl font-bold text-center">Login</h2>
+            <h2 className="text-2xl font-bold text-center">Connexion</h2>
             <form onSubmit={handleLogin} className="space-y-4">
                 <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Email
-                </label>
                 <input
                     id="email"
                     type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    name="email"
+                    value={formData.email}
+                    onChange={(e)=>handleChange(e)}
                     className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
+                    placeholder="Email"
                 />
                 </div>
                 <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
-                </label>
                 <input
                     id="password"
                     type="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
                     className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
+                    placeholder="Password"
                 />
                 </div>
                 <button
