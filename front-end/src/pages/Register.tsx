@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosConfig from "../axiosConfig"
+import axiosConfig from "../axiosConfig";
 import RegisterForm from "../components/RegisterForm";
 import toast from 'react-hot-toast';
-import axios from "axios";
+
 const Register: React.FC = () => {
   const navigate = useNavigate();
 

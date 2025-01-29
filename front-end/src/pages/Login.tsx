@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import LoginForm from '../components/LoginForm'
+import axiosConfig from "../axiosConfig";
+
 
 const Login: React.FC = () => {
 
@@ -18,7 +20,10 @@ const Login: React.FC = () => {
     
     try {
       // Appel à l'API backend pour l'authentification
-      const response = await axios.post('/api/login', { email, password });
+      const response = await axiosConfig.get('/api/login', {         
+        email: formData.email,
+        password: formData.password,
+      });
 
       // Succès : tu peux rediriger l'utilisateur ou afficher un message
       toast.success('Connexion réussie');
