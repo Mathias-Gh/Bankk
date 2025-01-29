@@ -19,11 +19,8 @@ def login_user(credentials: LoginRequest, session: Session = Depends(get_session
     
     if user.token:
         access_token = user.token
-    else:
-        access_token = create_access_token(data={"sub": user.email})
-        user.token = access_token
-        session.commit()
-        session.refresh(user)
+
+    token = create_access_token(data={"sub": new_user.email})
 
     return {
         "access_token": access_token,

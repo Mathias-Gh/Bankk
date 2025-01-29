@@ -21,7 +21,7 @@ const Login: React.FC = () => {
     e.preventDefault();
 
     try {
-      const response = await axiosConfig.post('/login', formData);
+      const response = await axiosConfig.get('/login', formData);
 
       const { access_token } = response.data;
 

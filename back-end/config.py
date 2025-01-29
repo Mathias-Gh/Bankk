@@ -14,7 +14,6 @@ class User(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
     email: EmailStr = Field(unique=True)
     password: str = Field(min_length=8)
-    token: str = Field(default=None, nullable=True)
 
 class UserCreate(SQLModel): 
     email: EmailStr

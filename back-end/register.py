@@ -34,11 +34,6 @@ async def create_user(user: UserCreate, session: Session = Depends(get_session))
         session.commit()
         session.refresh(new_account)
 
-        token = create_access_token(data={"sub": new_user.email})
-        new_user.token = token
-        session.commit()
-        session.refresh(new_user)
-
         return {
             "email": new_user.email,
             "iban": new_account.iban_account,

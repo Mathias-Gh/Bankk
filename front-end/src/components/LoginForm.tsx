@@ -11,8 +11,9 @@ const LoginForm: React.FC<LoginFormProps>  = ({ formData, handleLogin, handleCha
                 <input
                     id="email"
                     type="email"
+                    name="email"
                     value={formData.email}
-                    onChange={handleChange}
+                    onChange={(e)=>handleChange(e)}
                     className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     required
                     placeholder="Email"
@@ -22,6 +23,7 @@ const LoginForm: React.FC<LoginFormProps>  = ({ formData, handleLogin, handleCha
                 <input
                     id="password"
                     type="password"
+                    name="password"
                     value={formData.password}
                     onChange={handleChange}
                     className="w-full px-4 py-2 mt-1 border rounded-lg focus:ring-blue-500 focus:border-blue-500"
