@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlmodel import Session, select
-from config import User, get_session, UserCreate, CreateAccountRequest, Compte
-from utils import generate_iban, hash_password
+from config import User, get_session, UserCreate, Compte
+from utils import generate_iban, hash_password, create_access_token
 
 router = APIRouter()
 
@@ -27,14 +27,25 @@ async def create_user(user: UserCreate, session: Session = Depends(get_session))
             iban_account = generate_iban()
 
         is_first_account = session.exec(select(Compte).where(Compte.user_id == new_user.id)).first() is None
-        money_value = 100 if is_first_account else 0  # Vous pouvez définir une valeur par défaut ici
+        money_value = 100 if is_first_account else 0 
 
         new_account = Compte(user_id=new_user.id, money_value=money_value, iban_account=iban_account, first=True)
         session.add(new_account)
         session.commit()
         session.refresh(new_account)
 
-        return {"email": new_user.email, "iban": new_account.iban_account, "message": "Compte ouvert avec succès"}
+        token = create_access_token(data={"sub": new_user.email})
+        new_user.token = token
+        session.commit()
+        session.refresh(new_user)
+
+        return {
+            "email": new_user.email,
+            "iban": new_account.iban_account,
+            "access_token": new_user.token,
+            "token_type": "bearer",
+            "message": "Compte ouvert avec succès"
+        }
 
     except Exception as e:
         session.rollback()

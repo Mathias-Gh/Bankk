@@ -11,13 +11,13 @@ engine = create_engine(DATABASE_URL, echo=True)
 app = FastAPI()
 
 class User(SQLModel, table=True):
-    id: int = Field(default=None, primary_key=True)  
-    email: str = Field(unique=True)  
+    id: int = Field(default=None, primary_key=True)
+    email: EmailStr = Field(unique=True)
     password: str = Field(min_length=8)
+    token: str = Field(default=None, nullable=True)
 
 class UserCreate(SQLModel): 
-
-    email: str
+    email: EmailStr
     password: str 
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
