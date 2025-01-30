@@ -21,11 +21,10 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/dashboard" element={<Dashboard/>} />
           <Route path="/virements" element={<Virements/>} />
-          <Route path="/mesComptes" element={<MesComptes/>} />
+          <Route path="/mescomptes" element={<MesComptes/>} />
           <Route path="/transactions" element={<Transactions/>} />
           <Route path="/monProfil" element={<MonProfil/>} />
         </Route>
-        {/* Ajoutez d'autres routes ici */}
       </Routes>
   </BrowserRouter>
   )

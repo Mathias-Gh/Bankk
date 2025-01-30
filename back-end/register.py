@@ -27,14 +27,15 @@ async def create_user(user: UserCreate, session: Session = Depends(get_session))
             iban_account = generate_iban()
 
         is_first_account = session.exec(select(Compte).where(Compte.user_id == new_user.id)).first() is None
+        account_name = "Compte principal" if is_first_account else "Compte sans nom"
         money_value = 100 if is_first_account else 0  # Vous pouvez définir une valeur par défaut ici
 
-        new_account = Compte(user_id=new_user.id, money_value=money_value, iban_account=iban_account, first=True)
+        new_account = Compte(user_id=new_user.id, money_value=money_value, iban_account=iban_account, account_name=account_name, first=True)
         session.add(new_account)
         session.commit()
         session.refresh(new_account)
 
-        return {"email": new_user.email, "iban": new_account.iban_account, "message": "Compte ouvert avec succès"}
+        return {"email": new_user.email, "iban": new_account.iban_account, "account_name": new_account.account_name, "message": "Compte ouvert avec succès"}
 
     except Exception as e:
         session.rollback()
