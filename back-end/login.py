@@ -20,7 +20,7 @@ def login(credentials: LoginRequest, session: Session = Depends(get_session)):
     if user.password != hash_password(credentials.password):
         raise HTTPException(status_code=403, detail="Mot de passe incorrect")
 
-    access_token = create_access_token(data={"sub": user.email})
+    access_token = create_access_token(data={"sub": user.id})
 
     # Créer une réponse avec un cookie contenant le JWT
     response = JSONResponse(content={"message": "Connecté avec succès"})

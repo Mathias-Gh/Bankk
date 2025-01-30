@@ -1,36 +1,38 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import axiosConfig from '../axiosConfig';
-import LoginForm from '../components/LoginForm';
 import toast from 'react-hot-toast';
+import React, { useState } from 'react';
+import LoginForm from '../components/LoginForm';
+import { useNavigate } from 'react-router-dom';
 
 const Login: React.FC = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const navigate = useNavigate();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-console.log(formData)
+  const handleLogin = async () => {
     try {
-        const response = await axiosConfig.post('/login', formData);
-        const { access_token } = response.data;
-        localStorage.setItem('access_token', access_token);
-        
-      toast.success('Connexion réussie');
-      console.log(response.data);
-
-      navigate('/mescomptes');
+      console.log('Attempting to log in with:', formData);
+      const response = await axiosConfig.post('/login', formData);
+      console.log('Server response:', response);
+  
+      const { access_token } = response.data;
+      if (access_token) {
+        localStorage.setItem('access_token', access_token); // Stocker le token
+        toast.success('Connexion réussie');
+        console.log('Access token stored:', access_token);
+  
+        // Rediriger vers une autre page après la connexion
+        console.log('Redirecting to /mescomptes');
+        navigate('/mescomptes');
+      } else {
+        console.error('No access token received');
+        toast.error('Échec de la connexion. Aucun token reçu.');
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
       toast.error('Échec de la connexion. Vérifiez vos identifiants.');
     }
   };
