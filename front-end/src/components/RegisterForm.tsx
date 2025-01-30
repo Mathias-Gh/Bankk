@@ -1,12 +1,16 @@
 import React from "react";
 import { RegisterFormProps } from "../type/RegisterType";
 
-const RegisterForm: React.FC<RegisterFormProps>  = ({ formData, handleChange, handleSubmit }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ formData, handleChange, handleSubmit }) => {
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault(); // Empêche le rechargement de la page
+    handleSubmit(event);
+  };
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-6 text-center">Créer un compte</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={onSubmit} className="space-y-4">
           <div>
             <input
               type="email"
