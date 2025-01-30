@@ -1,4 +1,4 @@
-from sqlmodel import SQLModel, Field, create_engine, Session, select
+from sqlmodel import SQLModel, Field, create_engine, UniqueConstraint, Session, select
 from fastapi import FastAPI, HTTPException, Depends
 from pydantic import EmailStr, BaseModel
 import re
@@ -27,7 +27,12 @@ class Compte(SQLModel, table=True):
     money_value: float | None = Field(default=None)
     first: bool = Field(default=False)
     closed: bool = Field(default=False)
-    datecreated : datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Europe/Paris")))
+    datecreated: datetime = Field(default_factory=lambda: datetime.now(ZoneInfo("Europe/Paris")))
+    account_name: str = Field()
+
+    __table_args__ = (
+        UniqueConstraint('user_id', 'account_name', name='unique_user_account_name'),
+        )
 
 class Beneficiary(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)
@@ -71,8 +76,7 @@ class LoginRequest(SQLModel):
 
 class CreateAccountRequest(SQLModel):
     user_id: int
-    iban_account: str
-    money_value: float
+    account_name: str
 
 class AccountRequest(SQLModel):
     user_id: int
