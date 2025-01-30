@@ -1,7 +1,7 @@
 import React from "react";
 import { RegisterFormProps } from "../type/RegisterType";
 
-const RegisterForm: React.FC<RegisterFormProps>  = ({ formData, handleChange, handleSubmit }) => {
+const RegisterForm: React.FC<RegisterFormProps> = ({ formData, handleChange, handleSubmit, errors }) => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -15,9 +15,12 @@ const RegisterForm: React.FC<RegisterFormProps>  = ({ formData, handleChange, ha
               value={formData.email}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
+              className={`mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                errors.email ? 'border-red-500' : ''
+              }`}
               placeholder="Email"
             />
+            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
           </div>
           <div>
             <input
@@ -27,9 +30,27 @@ const RegisterForm: React.FC<RegisterFormProps>  = ({ formData, handleChange, ha
               value={formData.password}
               onChange={handleChange}
               required
-              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Password"
+              className={`mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                errors.password ? 'border-red-500' : ''
+              }`}
+              placeholder="Mot de passe"
             />
+            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+          </div>
+          <div>
+            <input
+              type="password"
+              id="confirmPassword"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+              className={`mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
+                errors.confirmPassword ? 'border-red-500' : ''
+              }`}
+              placeholder="Confirmer le mot de passe"
+            />
+            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
           </div>
           <button
             type="submit"
