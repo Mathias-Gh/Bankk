@@ -21,16 +21,14 @@ const Login: React.FC = () => {
     e.preventDefault();
 console.log(formData)
     try {
-      const response = await axiosConfig.post('/login', formData);
-
-      const { access_token } = response.data;
-
-      localStorage.setItem('access_token', access_token);
-
+        const response = await axiosConfig.post('/login', formData);
+        const { access_token } = response.data;
+        localStorage.setItem('access_token', access_token);
+        
       toast.success('Connexion réussie');
       console.log(response.data);
 
-      navigate('/home');
+      navigate('/mescomptes');
     } catch (error) {
       console.error(error);
       toast.error('Échec de la connexion. Vérifiez vos identifiants.');
