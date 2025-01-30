@@ -11,9 +11,8 @@ router = APIRouter()
 @router.post("/login", response_model=dict)
 def login(credentials: LoginRequest, session: Session = Depends(get_session)):
 
-
     user = session.exec(select(User).where(User.email == credentials.email)).first()
-    
+
     if not user:
         raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
 
@@ -23,8 +22,7 @@ def login(credentials: LoginRequest, session: Session = Depends(get_session)):
     access_token = create_access_token(data={"sub": user.id})
 
     # Créer une réponse avec un cookie contenant le JWT
-    response = JSONResponse(content={"message": "Connecté avec succès"})
+    response = JSONResponse(content={"access_token": access_token})
     response.set_cookie(key="access_token", value=access_token, httponly=True, max_age=timedelta(hours=1))
-
 
     return response
