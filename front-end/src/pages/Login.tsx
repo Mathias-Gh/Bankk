@@ -10,15 +10,20 @@ const Login: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+    console.log(formData);
+    
   };
 
   const handleLogin = async () => {
+    console.log('Logging in...');
     try {
       console.log('Attempting to log in with:', formData);
       const response = await AxiosConfiguration.post('/login', formData);
       console.log('Server response:', response);
   
-      const { access_token } = response.data;
+      const {access_token} = response.data;
+      console.log(response.data);
+
       if (access_token) {
         localStorage.setItem('access_token', access_token); // Stocker le token
         toast.success('Connexion réussie');
@@ -38,7 +43,9 @@ const Login: React.FC = () => {
   };
 
   return (
-    <LoginForm formData={formData} handleChange={handleChange} handleLogin={handleLogin} />
+    <>
+      <LoginForm formData={formData} handleChange={handleChange} handleLogin={handleLogin} />
+    </>
   );
 };
 
