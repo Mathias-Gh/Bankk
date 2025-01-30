@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axiosConfig from "../axiosConfig";
+import AxiosConfiguration from "../AxiosConfiguration";
 import toast from "react-hot-toast";
 
 interface VirementModalProps {
@@ -28,7 +28,7 @@ const VirementModal: React.FC<VirementModalProps> = ({ isOpen, onClose }) => {
     setLoading(true);
 
     try {
-      const response = await axiosConfig.post("/transfer/", {
+      const response = await AxiosConfiguration.post("/transfer/", {
         from_iban_account: formData.fromIban,
         to_iban_account: formData.toIban,
         amount: parseFloat(formData.amount),

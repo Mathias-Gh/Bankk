@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const axiosConfig = axios.create({
+const AxiosConfiguration = axios.create({
   baseURL: 'http://127.0.0.1:8000/api',
   headers: {
     accept: "application/json",
@@ -9,7 +9,7 @@ const axiosConfig = axios.create({
   withCredentials: false, // Pas besoin de cookies
 });
 
-axiosConfig.interceptors.request.use(
+AxiosConfiguration.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem('access_token');
     config.headers = config.headers || {};
@@ -21,4 +21,4 @@ axiosConfig.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-export default axiosConfig;
+export default AxiosConfiguration;

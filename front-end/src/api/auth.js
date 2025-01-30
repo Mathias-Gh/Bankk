@@ -1,7 +1,7 @@
-import axiosConfig from "../axiosConfig";
+import AxiosConfiguration from "../AxiosConfiguration";
 
 export async function Register(email, password) {
-    axiosConfig.post('/register', {email, password})
+    AxiosConfiguration.post('/register', {email, password})
     .then(reponse => {
         console.log(reponse.data)
     })
@@ -11,7 +11,7 @@ export async function Register(email, password) {
 }
 
  export async function Login(email, password) {
-    axiosConfig.get('/login', {email, password})
+    AxiosConfiguration.get('/login', {email, password})
     .then(reponse => {
         console.log(reponse.data)
     })

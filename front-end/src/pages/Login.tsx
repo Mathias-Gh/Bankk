@@ -1,4 +1,4 @@
-import axiosConfig from '../axiosConfig';
+import AxiosConfiguration from '../AxiosConfiguration';
 import toast from 'react-hot-toast';
 import React, { useState } from 'react';
 import LoginForm from '../components/LoginForm';
@@ -15,7 +15,7 @@ const Login: React.FC = () => {
   const handleLogin = async () => {
     try {
       console.log('Attempting to log in with:', formData);
-      const response = await axiosConfig.post('/login', formData);
+      const response = await AxiosConfiguration.post('/login', formData);
       console.log('Server response:', response);
   
       const { access_token } = response.data;

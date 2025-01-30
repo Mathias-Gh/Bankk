@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axiosConfig from "../axiosConfig"
+import AxiosConfiguration from "../AxiosConfiguration"
 import RegisterForm from "../components/RegisterForm";
 import toast from 'react-hot-toast';
 
@@ -22,7 +22,7 @@ const Register: React.FC = () => {
     console.log(formData)
 
     try {
-      const response = await axiosConfig.post('/register', formData);
+      const response = await AxiosConfiguration.post('/register', formData);
 
       toast.success('Bravo, vous êtes inscrit. Veuillez vous connecter.');
       console.log(response.data);

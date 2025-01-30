@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axiosConfig from '../axiosConfig';  // Fichier axios de configuration
+import AxiosConfiguration from '../AxiosConfiguration';  // Fichier axios de configuration
 
 const MesComptes: React.FC = () => {
   const [accounts, setAccounts] = useState<any[]>([]);  // Stocke les comptes
@@ -10,7 +10,7 @@ const MesComptes: React.FC = () => {
   const fetchAccounts = async () => {
     try {
       // Envoi de la requête pour récupérer les comptes de l'utilisateur
-      const { data } = await axiosConfig.get(`/listAccount`, {
+      const { data } = await AxiosConfiguration.get(`/listAccount`, {
         withCredentials: true,  // Important : cela envoie les cookies avec la requête
       });
 
