@@ -1,69 +1,24 @@
-import { useEffect, useState } from 'react';
-import '../App.css';
-import AxiosConfiguration from '../AxiosConfiguration';
-import NavBar from '../components/NavBar.tsx';
-import UserMoneyChart from '../components/UserMoneyChart.tsx';
-
-interface AccountData {
-  balance: number[];
-  labels: string[];
-  entree: number[];
-  sortie: number[];
-}
+import '../App.css'
+import NavBar from '../components/NavBar.tsx'
+import UserMoneyChart from '../components/UserMoneyChart.tsx'
 
 function Dashboard() {
-  const [data, setData] = useState<AccountData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await AxiosConfiguration.get<AccountData>('/account/get/all');
-        console.log("Données reçues :", response.data);
-        setData(response.data);
-      } catch (err: any) {
-        if (err.response) {
-          setError(`Erreur ${err.response.status} : ${err.response.data.message || "Problème inconnu"}`);
-        } else if (err.request) {
-          setError("Le serveur ne répond pas. Vérifiez votre connexion.");
-        } else {
-          setError("Une erreur est survenue : " + err.message);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-  
-    fetchData();
-  }, []);
-  
-  
+  // Exemple de données et d'étiquettes
+  const soldeData = [100, 200, 150, 300, 250]; // Remplacez par les données réelles de l'utilisateur
+  const labels = ['Jan', 'Feb', 'Mar', 'Apr', 'May']; // Remplacez par les étiquettes réelles
+  const entreeData = [50, 100, 75, 150, 125]; // Remplacez par les données réelles des entrées
+  const sortieData = [25, 50, 30, 75, 60]; // Remplacez par les données réelles des sorties
 
   return (
     <>
       <NavBar />
       <h1>Dashboard</h1>
-
       <select className="border border-gray-300 rounded-md p-2 mt-4 bg-white text-gray-700 hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ease-in-out">
         <option value="option1">Compte Principal</option>
-        <option value="option2">Compte Secondaire</option>
-        <option value="option3">Compte Tertiaire</option>
       </select>
-
-      {error && <p className="text-red-500 mt-4">{error}</p>}
-      {loading && <p className="text-gray-500 mt-4">Chargement...</p>}
-
-      {data && (
-        <UserMoneyChart
-          soldeData={data.balance}
-          labels={data.labels}
-          entreeData={data.entree}
-          sortieData={data.sortie}
-        />
-      )}
+      <UserMoneyChart soldeData={soldeData} labels={labels} entreeData={entreeData} sortieData={sortieData} />
     </>
-  );
+  )
 }
 
 export default Dashboard;

@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { getTransactions } from '../api/transactionService';
 import { getAccounts } from '../api/accountService';
 import { AxiosError } from 'axios';
+import NavBar from '../components/NavBar.tsx';
 import AccountSelector from '../components/AccountSelector';
 import TransactionList from '../components/TransactionList';
 
@@ -67,6 +68,8 @@ const TransactionsPage: React.FC = () => {
   };
 
   return (
+    <>
+    <NavBar />
     <div className="p-6 max-w-4xl mx-auto">
       {error && <div className="text-red-500 mb-4">{error}</div>}
       <div className="flex justify-between items-center mb-4">
@@ -105,6 +108,7 @@ const TransactionsPage: React.FC = () => {
 
       <TransactionList transactions={filteredTransactions} getAccountName={getAccountName} />
     </div>
+    </>
   );
 };
 

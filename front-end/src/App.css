@@ -40,7 +40,22 @@
 .read-the-docs {
   color: #888;
 }
+nav{
+  display: flex;
+  width: 70%;
+  margin: auto;
+  justify-content: center;
+}
 h1 {
   font-size: 2em;
   margin: .5em;
+}
+#btnDisconnect{
+  margin-top: 2em;
+  padding: 1em 2em;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: larger;
 }

@@ -1,7 +1,6 @@
 import{BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
 import Dashboard from './pages/Dashboard.tsx'
-import Home from './pages/Home.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
 import TransactionsPage from './pages/TransactionsPage.tsx'
@@ -20,7 +19,6 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
         <Route path="/deconnexion" element={<Deconnexion />} />
-
           <Route path="/dashboard" element={<Dashboard/>} />
           <Route path="/virements" element={<Virements/>} />
           <Route path="/accountspage" element={<AccountsPage/>} />

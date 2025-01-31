@@ -5,6 +5,7 @@ import AddAccountForm from '../components/AddAccountForm';
 import { AxiosError } from 'axios';
 import AxiosConfiguration from '../AxiosConfiguration';
 import { useNavigate } from 'react-router-dom';
+import NavBar from '../components/NavBar.tsx';
 
 interface Account {
   id: number;
@@ -88,6 +89,8 @@ const AccountsPage: React.FC = () => {
   }
 
   return (
+    <>
+    <NavBar />
     <div className="flex-grow flex flex-col justify-center items-center">
       <div className="w-full max-w-4xl p-6">
         <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">Mes Comptes</h1>
@@ -109,6 +112,7 @@ const AccountsPage: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 
