@@ -1,11 +1,10 @@
 import{BrowserRouter, Routes, Route } from "react-router-dom";
 import './App.css'
 import Dashboard from './pages/Dashboard.tsx'
-import Home from './pages/Home.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
 import TransactionsPage from './pages/TransactionsPage.tsx'
-import Virements from './pages/Virements.tsx'
+import TransfersPage from './pages/TransfersPage.tsx'
 import AccountsPage from './pages/AccountsPage.tsx'
 import MonProfil from './pages/MonProfil.tsx'
 import Deconnexion from './components/Deconnexion.tsx'
@@ -22,9 +21,10 @@ function App() {
         <Route path="/deconnexion" element={<Deconnexion />} />
 
           <Route path="/dashboard" element={<Dashboard/>} />
-          <Route path="/virements" element={<Virements/>} />
+          <Route path="/transferspage" element={<TransfersPage/>} />
           <Route path="/accountspage" element={<AccountsPage/>} />
           <Route path="/transactions/:accountId" element={<TransactionsPage />} />
+          <Route path="/transactions" element={<TransactionsPage />} />
           <Route path="/monProfil" element={<MonProfil/>} />
         </Route>
       </Routes>

@@ -1,3 +1,4 @@
+import axios from 'axios'; // Importer axios
 import AxiosConfiguration from '../AxiosConfiguration';
 import { AxiosError } from 'axios';
 
@@ -24,4 +25,30 @@ export const getTransactions = async (token: string) => {
       throw new Error("Erreur inattendue lors de la récupération des transactions.");
     }
   }
+};
+
+// Définir le type TransferRequest
+interface TransferRequest {
+  account_iban_from: string;
+  account_iban_to: string;
+  amount: number;
+  transaction_note: string;
+}
+
+export const transferFunds = async (token: string, transferData: TransferRequest) => {
+  const response = await axios.post(`${API_URL}/transactions/transfer`, transferData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+export const cancelTransaction = async (token: string, transactionId: number) => {
+  const response = await axios.post(`${API_URL}/transactions/cancel`, { transaction_id: transactionId }, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
 };
