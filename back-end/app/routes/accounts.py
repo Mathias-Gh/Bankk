@@ -46,7 +46,7 @@ def get_accounts(session=Depends(get_session), user_id=Depends(user_service_inst
 
 class CloseAccountRequest(BaseModel):
     account_iban: str
-    password: str
+    account_password: str
 
 @router.delete("/close")
 def close_account(
@@ -59,7 +59,7 @@ def close_account(
     """
     try:
         # Verify the password
-        user_service_instance_auth.verify_password(user_id, request.password, session)
+        user_service_instance_auth.verify_password(user_id, request.account_password, session)
 
         # Close the account
         return account_service_instance.close_account(request.account_iban, user_id, session)
