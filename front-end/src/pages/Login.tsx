@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import LoginForm from '../components/LoginForm';
 import { useNavigate } from 'react-router-dom';
 
-
 const Login: React.FC = () => {
   const [formData, setFormData] = useState({ email: '', password: '' });
   const [errors, setErrors] = useState({ email: '', password: '' });
@@ -32,7 +31,7 @@ const Login: React.FC = () => {
         toast.success('Connexion réussie');
         console.log('Access token stored:', token);
 
-        navigate('/accountspage');
+        navigate('/dashboard');
       } else {
         console.error('No access token received');
         toast.error('Échec de la connexion. Aucun token reçu.');
