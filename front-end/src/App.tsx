@@ -8,6 +8,7 @@ import Transactions from './pages/Transactions.tsx'
 import Virements from './pages/Virements.tsx'
 import MesComptes from './pages/MesComptes.tsx'
 import MonProfil from './pages/MonProfil.tsx'
+import Deconnexion from './components/Deconnexion.tsx'
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 
@@ -15,10 +16,11 @@ function App() {
   return(
   <BrowserRouter>
     <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route element={<ProtectedRoute />}>
-          <Route path="/home" element={<Home />} />
+        <Route path="/deconnexion" element={<Deconnexion />} />
+
           <Route path="/dashboard" element={<Dashboard/>} />
           <Route path="/virements" element={<Virements/>} />
           <Route path="/mescomptes" element={<MesComptes/>} />

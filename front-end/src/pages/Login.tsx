@@ -31,7 +31,7 @@ const Login: React.FC = () => {
         toast.success('Connexion réussie');
         console.log('Access token stored:', token);
 
-        navigate('/mescomptes');
+        navigate('/dashboard');
       } else {
         console.error('No access token received');
         toast.error('Échec de la connexion. Aucun token reçu.');
