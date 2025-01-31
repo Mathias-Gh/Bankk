@@ -1,5 +1,5 @@
 import { useState } from "react";
-import VirementModal from "../components/VirementModal";
+import VirementModal from "../modal/VirementModal";
 
 const Transactions: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
