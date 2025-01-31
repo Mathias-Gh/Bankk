@@ -4,9 +4,9 @@ import Dashboard from './pages/Dashboard.tsx'
 import Home from './pages/Home.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
-import Transactions from './pages/Transactions.tsx'
+import TransactionsPage from './pages/TransactionsPage.tsx'
 import Virements from './pages/Virements.tsx'
-import MesComptes from './pages/MesComptes.tsx'
+import AccountsPage from './pages/AccountsPage.tsx'
 import MonProfil from './pages/MonProfil.tsx'
 import Deconnexion from './components/Deconnexion.tsx'
 import ProtectedRoute from "./components/ProtectedRoute.tsx";
@@ -23,8 +23,8 @@ function App() {
 
           <Route path="/dashboard" element={<Dashboard/>} />
           <Route path="/virements" element={<Virements/>} />
-          <Route path="/mescomptes" element={<MesComptes/>} />
-          <Route path="/transactions" element={<Transactions/>} />
+          <Route path="/accountspage" element={<AccountsPage/>} />
+          <Route path="/transactions/:accountId" element={<TransactionsPage />} />
           <Route path="/monProfil" element={<MonProfil/>} />
         </Route>
       </Routes>
