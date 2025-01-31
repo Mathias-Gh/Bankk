@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AxiosConfiguration from "../AxiosConfiguration"
+import AxiosConfiguration from "../AxiosConfiguration";
 import RegisterForm from "../components/RegisterForm";
 import toast from 'react-hot-toast';
 
@@ -8,6 +8,14 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const [errors, setErrors] = useState({
     first_name: "",
     last_name: "",
     email: "",
@@ -23,13 +31,22 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    // Réinitialiser les erreurs
+    setErrors({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Les mots de passe ne correspondent pas.');
+      setErrors({ ...errors, confirmPassword: 'Les mots de passe ne correspondent pas.' });
       return;
     }
 
     if (formData.password.length < 8) {
-      toast.error('Le mot de passe doit contenir au moins 8 caractères.');
+      setErrors({ ...errors, password: 'Le mot de passe doit contenir au moins 8 caractères.' });
       return;
     }
 
@@ -42,12 +59,17 @@ const Register: React.FC = () => {
       navigate('/login');
     } catch (error) {
       console.error(error);
-      toast.error('Échec de l\'inscription. Vérifiez vos identifiants.');
+      if (error.response && error.response.status === 409) {
+        // 409 Conflict is a common status code for "user already exists"
+        setErrors({ ...errors, email: 'Cet email est déjà utilisé.' });
+      } else {
+        toast.error('Échec de l\'inscription. Vérifiez vos identifiants.');
+      }
     }
   };
 
   return (
-    <RegisterForm formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} />
+    <RegisterForm formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} errors={errors} />
   );
 };
 

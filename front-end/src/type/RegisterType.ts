@@ -9,5 +9,11 @@ export interface FormData {
 export interface RegisterFormProps {
     formData: FormData;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    handleSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
-}
+    handleSubmit: (event: React.FormEvent) => void;
+    errors: {
+      first_name: string;
+      last_name: string;
+      email: string;
+      password: string;
+      confirmPassword: string;
+    };}
