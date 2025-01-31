@@ -12,7 +12,11 @@ const Virements: React.FC = () => {
         const response = await AxiosConfiguration.get('/beneficiaires/get/all');
         setBeneficiaries(response.data);
       } catch (error) {
-        toast.error('Échec de la récupération des bénéficiaires.');
+        if (error.response && error.response.status === 404) {
+          toast.error('Endpoint non trouvé. Vérifiez l\'URL de l\'API.');
+        } else {
+          toast.error('Échec de la récupération des bénéficiaires.');
+        }
       }
     };
 
