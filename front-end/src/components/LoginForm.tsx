@@ -1,11 +1,12 @@
 import React from "react";
 import { LoginFormProps } from "../type/LoginType";
 
-const LoginForm: React.FC<LoginFormProps> = ({ formData, handleLogin, handleChange }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ formData, handleLogin, handleChange, errors }) => {
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Empêche le rechargement de la page
     handleLogin(event);
   };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-4 bg-white shadow-lg rounded-2xl">
@@ -22,6 +23,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ formData, handleLogin, handleChan
               required
               placeholder="Email"
             />
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
           <div>
             <input
@@ -34,6 +36,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ formData, handleLogin, handleChan
               required
               placeholder="Password"
             />
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <button
             type="submit"
