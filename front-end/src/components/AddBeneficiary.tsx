@@ -29,7 +29,9 @@ const AddBeneficiary: React.FC = () => {
     } catch (error: any) {
       console.error('Error adding beneficiary:', error);
 
-      if (error.response && error.response.data && error.response.data.message) {
+      if (error.response && error.response.status === 404) {
+        toast.error('Endpoint non trouvé. Vérifiez l\'URL de l\'API.');
+      } else if (error.response && error.response.data && error.response.data.message) {
         toast.error(`Échec de l'ajout du bénéficiaire. ${error.response.data.message}`);
         setErrors({ ...errors, iban: error.response.data.message });
       } else {
