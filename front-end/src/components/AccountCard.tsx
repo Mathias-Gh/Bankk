@@ -8,8 +8,7 @@ interface AccountCardProps {
   balance: number;
   onClick: () => void;
 }
-
-const AccountCard: React.FC<AccountCardProps> = ({ id, name, iban, balance, onClick }) => {
+const AccountCard: React.FC<AccountCardProps> = ({ name, iban, balance, onClick }) => {
   return (
     <div onClick={onClick} className="p-4 bg-gray-100 rounded-md shadow-sm flex justify-between items-center cursor-pointer hover:bg-gray-200">
       <div className="flex-1">

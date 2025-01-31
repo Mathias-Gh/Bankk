@@ -1,9 +1,10 @@
-// pages/AccountsPage.tsx
-import React, { useEffect, useState } from 'react';
-import { getUserAccounts, addAccount } from '../api/AccountService'; // Service API pour gérer les comptes
+import React, { useEffect, useState, useCallback } from 'react';
+import { addAccount } from '../api/accountService';
 import AccountCard from '../components/AccountCard';
 import AddAccountForm from '../components/AddAccountForm';
-import AccountDetails from '../components/AccountDetails';
+import { AxiosError } from 'axios';
+import AxiosConfiguration from '../AxiosConfiguration';
+import { useNavigate } from 'react-router-dom';
 
 interface Account {
   id: number;
@@ -14,37 +15,68 @@ interface Account {
   main: boolean;
 }
 
+const getUserAccounts = async (token: string): Promise<Account[]> => {
+  try {
+    const response = await AxiosConfiguration.get('/account/get/all', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const AccountsPage: React.FC = () => {
   const [accounts, setAccounts] = useState<Account[]>([]);
-  const [selectedAccount, setSelectedAccount] = useState<Account | null>(null);
   const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState<boolean>(false);
-  
-  const token = 'ton_token_jwt'; // Remplacer par le token JWT de l'utilisateur connecté
+  const [loading, setLoading] = useState<boolean>(true);
+  const token = localStorage.getItem('token') || '';
+  const navigate = useNavigate();
+
+  const fetchAccounts = useCallback(async () => {
+    setLoading(true);
+    setError('');
+    try {
+      console.log('Fetching accounts...');
+      const accountsData = await getUserAccounts(token);
+      console.log('Accounts received:', accountsData);
+      setAccounts(accountsData);
+    } catch (error) {
+      console.error('API Error:', error);
+      if (error instanceof AxiosError && error.response) {
+        setError(`Erreur: ${error.response.data.message}`);
+      } else {
+        setError('Erreur inconnue lors de la récupération des comptes.');
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
 
   useEffect(() => {
-    const fetchAccounts = async () => {
-      setLoading(true);
-      try {
-        const accountsData = await getUserAccounts(token); // Récupérer les comptes via le service API
-        setAccounts(accountsData);
-      } catch (error) {
-        setError('Erreur lors de la récupération des comptes.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAccounts();
-  }, [token]);
+    if (token) {
+      fetchAccounts();
+    } else {
+      setError('Token invalide ou expiré. Veuillez vous reconnecter.');
+      setLoading(false);
+    }
+  }, [fetchAccounts, token]);
 
   const handleAddAccount = async (accountName: string) => {
     try {
-      const newAccount = await addAccount(accountName, token); // Ajouter un compte via le service API
-      setAccounts([...accounts, newAccount]); // Ajouter le nouveau compte à l'état
+      const newAccount = await addAccount(accountName, token);
+      setAccounts((prevAccounts) => [...prevAccounts, newAccount]);
     } catch (error) {
-      setError('Erreur lors de l\'ajout du compte.');
+      if (error instanceof AxiosError && error.response) {
+        setError(`Erreur lors de l'ajout du compte: ${error.response.data.message}`);
+      } else {
+        setError("Erreur lors de l'ajout du compte.");
+      }
     }
+  };
+
+  const handleAccountClick = (account: Account) => {
+    navigate(`/transactions/${account.id}`);
   };
 
   if (loading) {
@@ -56,32 +88,25 @@ const AccountsPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col bg-gray-50 p-8">
-      <div className="max-w-4xl w-full mx-auto bg-white p-6 rounded-lg shadow-lg flex-grow">
+    <div className="flex-grow flex flex-col justify-center items-center">
+      <div className="w-full max-w-4xl p-6">
         <h1 className="text-3xl font-semibold text-center text-gray-800 mb-6">Mes Comptes</h1>
 
         <AddAccountForm onAddAccount={handleAddAccount} />
 
-        {selectedAccount ? (
-          <AccountDetails {...selectedAccount} />
-        ) : (
-          <div className="mt-6">
-            {accounts.length > 0 ? (
-              <ul className="mt-4 space-y-4">
-                {accounts.map((account) => (
-                  <li key={account.id}>
-                    <AccountCard
-                      {...account}
-                      onClick={() => setSelectedAccount(account)} // Lors du clic, afficher les détails du compte
-                    />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <p className="mt-4 text-gray-500">Aucun compte trouvé.</p>
-            )}
-          </div>
-        )}
+        <div className="mt-6">
+          {accounts.length > 0 ? (
+            <ul className="mt-4 space-y-4">
+              {accounts.map((account) => (
+                <li key={account.id}>
+                  <AccountCard {...account} onClick={() => handleAccountClick(account)} />
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-4 text-gray-500">Aucun compte trouvé.</p>
+          )}
+        </div>
       </div>
     </div>
   );
