@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import AxiosConfiguration from "../AxiosConfiguration"
+import AxiosConfiguration from "../AxiosConfiguration";
 import RegisterForm from "../components/RegisterForm";
 import toast from 'react-hot-toast';
 
@@ -8,85 +8,68 @@ const Register: React.FC = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
 
   const [errors, setErrors] = useState({
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    setErrors({ ...errors, [name]: "" }); // Réinitialiser l'erreur lors de la modification
-  };
-
-  const validateForm = () => {
-    let isValid = true;
-    const newErrors = { email: "", password: "", confirmPassword: "" };
-
-    if (!formData.email) {
-      newErrors.email = "L'email est requis";
-      isValid = false;
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "L'email n'est pas valide";
-      isValid = false;
-    }
-
-    if (!formData.password) {
-      newErrors.password = "Le mot de passe est requis";
-      isValid = false;
-    } else if (formData.password.length < 8) {
-      newErrors.password = "Le mot de passe doit contenir au moins 8 caractères";
-      isValid = false;
-    }
-    if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = "Les mots de passe ne correspondent pas";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) {
+    // Réinitialiser les erreurs
+    setErrors({
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+
+    if (formData.password !== formData.confirmPassword) {
+      setErrors({ ...errors, confirmPassword: 'Les mots de passe ne correspondent pas.' });
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setErrors({ ...errors, password: 'Le mot de passe doit contenir au moins 8 caractères.' });
       return;
     }
 
     try {
-      const response = await AxiosConfiguration.post('/register', {
-        email: formData.email,
-        password: formData.password
-      });
+      const response = await AxiosConfiguration.post('/auth/register', formData);
 
       toast.success('Bravo, vous êtes inscrit. Veuillez vous connecter.');
       console.log(response.data);
 
       navigate('/login');
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
-      if (error.response && error.response.data && error.response.data.detail) {
-        toast.error(error.response.data.detail);
+      if (error.response && error.response.status === 409) {
+        // 409 Conflict is a common status code for "user already exists"
+        setErrors({ ...errors, email: 'Cet email est déjà utilisé.' });
       } else {
-        toast.error('Échec de l\'inscription. Veuillez réessayer.');
+        toast.error('Échec de l\'inscription. Vérifiez vos identifiants.');
       }
     }
   };
 
   return (
-    <RegisterForm 
-      formData={formData} 
-      handleChange={handleChange} 
-      handleSubmit={handleSubmit}
-      errors={errors}
-    />
+    <RegisterForm formData={formData} handleChange={handleChange} handleSubmit={handleSubmit} errors={errors} />
   );
 };
 

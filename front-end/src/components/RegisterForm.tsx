@@ -9,18 +9,42 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formData, handleChange, han
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <input
+              type="text"
+              id="first_name"
+              name="first_name"
+              value={formData.first_name}
+              onChange={handleChange}
+              required
+              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Prénom"
+            />
+            {errors.first_name && <p className="text-red-500 text-sm">{errors.first_name}</p>}
+          </div>
+          <div>
+            <input
+              type="text"
+              id="last_name"
+              name="last_name"
+              value={formData.last_name}
+              onChange={handleChange}
+              required
+              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
+              placeholder="Nom"
+            />
+            {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name}</p>}
+          </div>
+          <div>
+            <input
               type="email"
               id="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               required
-              className={`mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                errors.email ? 'border-red-500' : ''
-              }`}
+              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="Email"
             />
-            {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
           </div>
           <div>
             <input
@@ -30,12 +54,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formData, handleChange, han
               value={formData.password}
               onChange={handleChange}
               required
-              className={`mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                errors.password ? 'border-red-500' : ''
-              }`}
+              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="Mot de passe"
             />
-            {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
           </div>
           <div>
             <input
@@ -45,12 +67,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formData, handleChange, han
               value={formData.confirmPassword}
               onChange={handleChange}
               required
-              className={`mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500 ${
-                errors.confirmPassword ? 'border-red-500' : ''
-              }`}
+              className="mt-1 p-2 w-full border rounded-md focus:ring-blue-500 focus:border-blue-500"
               placeholder="Confirmer le mot de passe"
             />
-            {errors.confirmPassword && <p className="text-red-500 text-xs mt-1">{errors.confirmPassword}</p>}
+            {errors.confirmPassword && <p className="text-red-500 text-sm">{errors.confirmPassword}</p>}
           </div>
           <button
             type="submit"
